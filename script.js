@@ -593,6 +593,107 @@ function displayWorstPerformingConclusion() {
     `;
 }
 
+// Render pie chart for average DEA by company
+function renderAverageDeaPieChart() {
+    const canvas = document.getElementById('averageDeaPieChart');
+    if (!canvas) return;
+    
+    const averages = calculateAverages();
+    const filteredVendors = getFilteredVendors();
+    
+    // Filter the averages to only show selected vendors
+    const chartData = filteredVendors.map(vendor => ({
+        vendor: vendor,
+        rate: averages[vendor] || 0
+    }));
+    
+    if (chartData.length === 0) {
+        canvas.style.display = 'none';
+        return;
+    }
+    
+    canvas.style.display = 'block';
+    
+    // Define random color palette
+    const colorPalette = [
+        '#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6',
+        '#ec4899', '#06b6d4', '#f97316', '#6366f1', '#14b8a6',
+        '#d946ef', '#0ea5e9', '#84cc16', '#f43f5e', '#06b6d4',
+        '#a855f7', '#22c55e', '#eab308', '#06b6d4', '#ec4899'
+    ];
+    
+    // Assign random colors to each company
+    const colors = chartData.map((item, index) => {
+        return colorPalette[index % colorPalette.length];
+    });
+    
+    // Destroy existing chart if it exists
+    if (window.averageDeaPieChartInstance) {
+        window.averageDeaPieChartInstance.destroy();
+    }
+    
+    // Create new pie chart
+    window.averageDeaPieChartInstance = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels: chartData.map(item => item.vendor),
+            datasets: [{
+                data: chartData.map(item => item.rate),
+                backgroundColor: colors,
+                borderColor: '#ffffff',
+                borderWidth: 2,
+                hoverBorderWidth: 3,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        font: { size: 12 },
+                        padding: 15,
+                        color: '#475569',
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, i) => ({
+                                text: `${label}: ${data.datasets[0].data[i]}%`,
+                                fillStyle: data.datasets[0].backgroundColor[i],
+                                hidden: false,
+                                index: i
+                            }));
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.parsed}%`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#ffffff',
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value, context) {
+                        const vendorName = chartData[context.dataIndex].vendor;
+                        // Generate abbreviation: take first letters of each word
+                        const abbrev = vendorName.split(' ').map(word => word[0]).join('').toUpperCase();
+                        return abbrev;
+                    },
+                    anchor: 'center',
+                    align: 'center'
+                }
+            }
+        }
+    });
+}
+
 
 // Render bar chart
 function renderBarChart() {
@@ -706,6 +807,7 @@ function filterByAdvocate() {
     renderVendorTrendChart(document.getElementById('vendorSelector').value); // Update trend chart
     renderDataTable();      // Update data table
     displayWorstPerformingConclusion(); // Display worst performing vendor
+    renderAverageDeaPieChart(); // Update pie chart
 }
 
 // Populate advocate selector dropdown
@@ -957,6 +1059,7 @@ function filterByVendor() {
     renderVendorTrendChart(selectedVendor); // Update trend chart
     renderDataTable();      // Update data table
     displayWorstPerformingConclusion(); // Display worst performing vendor
+    renderAverageDeaPieChart(); // Update pie chart
 }
 
 // Update vendor chart based on selection
@@ -1081,6 +1184,7 @@ document.addEventListener('DOMContentLoaded', function() {
         populateAdvocateSelector();
         renderDataTable();
         displayWorstPerformingConclusion();
+        renderAverageDeaPieChart();
     });
     
     // Also render initially after a delay to ensure DOM is ready
@@ -1089,5 +1193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         populateVendorSelector();
         renderDataTable();
         displayWorstPerformingConclusion();
+        renderAverageDeaPieChart();
     }, 1000);
 });
