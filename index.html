@@ -656,9 +656,20 @@
             </div>
         </div>
 
-        <!-- Worst Performing Vendor Conclusion -->
-        <div class="trend-section" style="background: white; border-left: 4px solid #f59e0b;">
-            <div id="worstPerformingConclusion"></div>
+        <!-- Worst Performing Vendor Conclusion & Average DEA Pie Chart -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <!-- Conclusion Section -->
+            <div class="trend-section" style="background: white; border-left: 4px solid #f59e0b; margin-bottom: 0;">
+                <div id="worstPerformingConclusion"></div>
+            </div>
+            
+            <!-- Pie Chart Section -->
+            <div class="trend-section" style="background: white; border-left: 4px solid #3b82f6; margin-bottom: 0;">
+                <h3>📊 Average DEA by Company</h3>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="averageDeaPieChart"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- DEA Trend Chart -->
