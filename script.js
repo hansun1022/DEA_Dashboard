@@ -1,3 +1,8 @@
+// Register chartjs-plugin-datalabels with Chart.js
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+}
+
 // Advocate names
 const advocates = [
     "Advocate 1",
