@@ -683,10 +683,11 @@ function renderAverageDeaPieChart() {
                     color: '#ffffff',
                     font: {
                         weight: 'bold',
-                        size: 11
+                        size: 12
                     },
                     formatter: function(value, context) {
-                        const vendorName = chartData[context.dataIndex].vendor;
+                        // Get vendor name from the label
+                        const vendorName = context.chart.data.labels[context.dataIndex];
                         // Generate abbreviation: take first letters of each word
                         const abbrev = vendorName.split(' ').map(word => word[0]).join('').toUpperCase();
                         return abbrev;
