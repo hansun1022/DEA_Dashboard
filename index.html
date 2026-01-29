@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEA Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2c3e50;
+        }
+        
+        .dashboard-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dashboard-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+        }
+        
+        .dashboard-header p {
+            margin: 8px 0 0 0;
+            font-size: 1rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #e8ecf1;
+            background: #fafbfc;
+            padding: 0 30px;
+        }
+        
+        .nav-link {
+            color: #64748b;
+            border: none;
+            font-weight: 600;
+            padding: 16px 24px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: #1e3c72;
+            background: transparent;
+            border: none;
+        }
+        
+        .nav-link.active {
+            color: #2a5298;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid #2a5298;
+            padding-bottom: 13px;
+        }
+        .tab-content {
+            padding: 40px;
+        }
+        
+        .form-section {
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-section h3 {
+            color: #1e3c72;
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .vendor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .vendor-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .vendor-card:hover {
+            border-color: #2a5298;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.1);
+        }
+        
+        .vendor-card h5 {
+            color: #1e3c72;
+            margin-bottom: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .vendor-card .form-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .vendor-card small {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        .vendor-card input {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .vendor-card input:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            outline: none;
+        }
+        
+        .btn-custom {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 11px 28px;
+            border-radius: 6px;
+            margin-right: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.25);
+        }
+        
+        .btn-custom:active {
+            transform: translateY(0);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 32px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .results-table {
+            margin-bottom: 0;
+        }
+        
+        .table-scroll-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-scroll-container table {
+            margin-bottom: 0;
+        }
+        
+        .results-table thead {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        .results-table thead th {
+            font-weight: 600;
+            border: none;
+            padding: 14px;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .results-table thead th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 11;
+        }
+        
+        .results-table td {
+            padding: 12px 14px;
+            border-color: #e8ecf1;
+            font-size: 0.9rem;
+        }
+        
+        .results-table tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background: white;
+            font-weight: 600;
+            z-index: 5;
+            border-right: 1px solid #e8ecf1;
+        }
+        
+        .results-table tbody tr {
+            transition: all 0.2s ease;
+        }
+        
+        .results-table tbody tr:hover {
+            background: #f0f4f9;
+        }
+        
+        .results-table tbody tr:hover td:first-child {
+            background: #f0f4f9;
+        }
+        
+        .alert-info {
+            background: #e0f2fe;
+            border: 1px solid #7dd3fc;
+            color: #0c4a6e;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .date-selector {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .date-selector .form-label {
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 0.95rem;
+        }
+        
+        .day-button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #64748b;
+        }
+        
+        .day-button:hover {
+            border-color: #2a5298;
+            color: #2a5298;
+        }
+        
+        .day-button.active {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-color: #2a5298;
+        }
+        
+        .no-data-message {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        .chatbox-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 360px;
+            max-height: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .chatbox-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px 12px 0 0;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+        }
+        
+        .chatbox-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .chatbox-close:hover {
+            transform: rotate(90deg);
+        }
+        
+        .chatbox-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f8fafc;
+            min-height: 250px;
+            max-height: 350px;
+        }
+        
+        .chat-message {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+        
+        .chat-message.bot {
+            justify-content: flex-start;
+        }
+        
+        .message-bubble {
+            max-width: 85%;
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        
+        .message-bubble.user-msg {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+        
+        .message-bubble.bot-msg {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        
+        .chatbox-input {
+            padding: 12px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 8px;
+            background: white;
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .chatbox-input input {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 9px 11px;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        
+        .chatbox-input input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+        
+        .chatbox-input button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 9px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        
+        .chatbox-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.2);
+        }
+        
+        .chatbox-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(42, 82, 152, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        
+        .chatbox-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(42, 82, 152, 0.4);
+        }
+        
+        .form-select {
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 9px 11px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .form-select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            outline: none;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .top-section {
+            background: #f8fafc;
+            padding: 24px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .top-section h3 {
+            color: #1e3c72;
+            margin-bottom: 18px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .top-section .form-section {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .top-section .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 24px;
+            margin-bottom: 24px;
+            align-items: flex-end;
+        }
+
+        .download-button {
+            background: #991b1b;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(153, 27, 27, 0.3);
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .download-button:hover {
+            background: #7f1d1d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(153, 27, 27, 0.4);
+        }
+
+        .download-button:active {
+            transform: translateY(0);
+        }
+
+        .email-button {
+            background: #15803d;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(21, 128, 61, 0.3);
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .email-button:hover {
+            background: #166534;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.4);
+        }
+
+        .email-button:active {
+            transform: translateY(0);
+        }
+
+        .email-button:disabled {
+            background: #a3a3a3;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .filter-column {
+            background: #f8fafc;
+            padding: 24px 30px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .filter-column h3 {
+            color: #1e3c72;
+            margin-bottom: 16px;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .filter-column .form-section {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin: 0;
+        }
+
+        .trend-section {
+            background: #f8fafc;
+            padding: 24px 30px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .trend-section h3 {
+            color: #1e3c72;
+            margin-bottom: 18px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .trend-section .form-section {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>📊 DEA Dashboard</h1>
+            <p class="mb-0">Daily Delivery On-time Rate Tracker for each Advocate</p>
+        </div>
+
+        <!-- Filters and Trend Section -->
+        <div class="filters-row">
+            <!-- Advocate Filter -->
+            <div class="filter-column">
+                <h3>👤 Filter by Advocate</h3>
+                <div class="form-section">
+                    <label class="form-label">Select Advocate:</label>
+                    <select id="advocateSelector" class="form-select" onchange="filterByAdvocate()">
+                        <option value="">-- All Advocates (Show All Companies) --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Vendor Selector -->
+            <div class="filter-column">
+                <h3>📈 Select Vendor</h3>
+                <div class="form-section">
+                    <label class="form-label">Select Vendor:</label>
+                    <select id="vendorSelector" class="form-select" onchange="filterByVendor()">
+                        <option value="">-- All companies --</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Download and Email Buttons -->
+            <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center; align-items: center; align-self: center;">
+                <button class="download-button" onclick="downloadPageAsPDF()">📥 Download</button>
+                <button class="email-button" onclick="emailPageAsJPEG()">📧 Email</button>
+            </div>
+        </div>
+
+        <!-- Worst Performing Vendor Conclusion -->
+        <div class="trend-section" style="background: white; border-left: 4px solid #f59e0b;">
+            <div id="worstPerformingConclusion"></div>
+        </div>
+
+        <!-- DEA Trend Chart -->
+        <div class="trend-section">
+            <h3>📈 DEA Trend for Selected Vendor</h3>
+            <div class="chart-container">
+                <canvas id="vendorTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="data-tab" data-bs-toggle="tab" href="#data" role="tab">Data</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" id="chart-tab" data-bs-toggle="tab" href="#chart" role="tab">Chart</a>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Data Tab -->
+            <div class="tab-pane fade" id="data" role="tabpanel">
+                <div class="form-section">
+                    <h3 class="mb-3">📅 Select Day</h3>
+                    <div id="dayButtons" class="mb-3"></div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="mb-3">📋 Enter DEA Rates for Selected Day</h3>
+                    <p class="text-muted">Enter DEA rates (0-100%) for each vendor</p>
+                    <div id="vendorInputs" class="vendor-grid"></div>
+                    <div class="mt-4">
+                        <button class="btn btn-custom" onclick="saveData()">💾 Save Data</button>
+                    </div>
+                </div>
+
+                <div id="dataAlert" class="alert alert-info mt-3" style="display: none;">
+                    <strong>✓ Success!</strong> <span id="alertMessage"></span>
+                </div>
+            </div>
+
+            <!-- Chart Tab -->
+            <div class="tab-pane fade show active" id="chart" role="tabpanel">
+                <div>
+                    <h3 class="mb-3">📊 Average DEA Rate by Vendor</h3>
+                    <div class="chart-container">
+                        <canvas id="deaChart"></canvas>
+                    </div>
+
+                    <h3 class="mb-3">📋 Daily DEA Rates by Vendor</h3>
+                    <div class="table-scroll-container">
+                        <table class="table table-hover results-table">
+                            <thead>
+                                <tr id="tableHeader">
+                                    <th>Vendor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="32" class="no-data-message">No data available. Please enter data in the Data tab first.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbox -->
+    <button class="chatbox-toggle" id="chatboxToggle" onclick="toggleChatbox()">💬</button>
+    <div class="chatbox-container" id="chatboxContainer" style="display: none;">
+        <div class="chatbox-header">
+            <span>Dashboard Help</span>
+            <button class="chatbox-close" onclick="toggleChatbox()">✕</button>
+        </div>
+        <div class="chatbox-messages" id="chatMessages">
+            <div class="chat-message bot">
+                <div class="message-bubble bot-msg">👋 Hello! I'm here to help. Ask me about the DEA Dashboard or type a vendor name to search.</div>
+            </div>
+        </div>
+        <div class="chatbox-input">
+            <input type="text" id="chatInput" placeholder="Ask a question or search..." onkeypress="handleChatInput(event)">
+            <button onclick="sendChatMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <!-- Chart.js Data Labels Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- html2canvas for image generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+</body>
+</html>
