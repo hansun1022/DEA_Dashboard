@@ -1,10 +1,6 @@
 // Register chartjs-plugin-datalabels with Chart.js
-try {
-    if (typeof ChartDataLabels !== 'undefined') {
-        Chart.register(ChartDataLabels);
-    }
-} catch(e) {
-    console.log('ChartDataLabels plugin not available');
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
 }
 
 // Advocate names
@@ -677,12 +673,26 @@ function renderAverageDeaPieChart() {
                     }
                 },
                 tooltip: {
-                tooltip: {
                     callbacks: {
                         label: function(context) {
                             return `${context.label}: ${context.parsed}%`;
                         }
                     }
+                },
+                datalabels: {
+                    color: '#ffffff',
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value, context) {
+                        const vendorName = chartData[context.dataIndex].vendor;
+                        // Generate abbreviation: take first letters of each word
+                        const abbrev = vendorName.split(' ').map(word => word[0]).join('').toUpperCase();
+                        return abbrev;
+                    },
+                    anchor: 'center',
+                    align: 'center'
                 }
             }
         }
